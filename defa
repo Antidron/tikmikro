@@ -1,0 +1,29 @@
+Když provedete obnovení továrního nastavení na routeru MikroTik, výchozí konfigurace obsahuje sadu základních pravidel firewallu pro zabezpečení zařízení.Tato pravidla jsou navržena pro standardní domácí nebo malou kancelář (SOHO), kde jedno rozhraní je WAN (veřejný internet) a druhé je LAN (lokální síť). 
+Výchozí firewall používá princip „výchozího zakázání“, což znamená, že jakýkoli provoz, který není výslovně povolen pravidlem, je automaticky zablokován. 
+Výchozí pravidla filtrování
+Výchozí pravidla filtrování jsou obvykle uspořádána do inputřetězce (provoz směřující do routeru) a forwardřetězce (provoz procházející routerem ). 
+inputpravidla řetězce (ochrana routeru)
+Přijmout zavedený, související a nesledovaný provoz: Povolí zpětný provoz pro legitimní, existující připojení a veškerá související připojení (např. vyhledávání DNS související s webovým požadavkem).
+Zastavit neplatná připojení: Blokuje síťové pakety, které jsou považovány za neplatné nebo nepatří k existujícímu připojení.
+Přijmout ICMP: Povoluje provoz protokolu ICMP (Internet Control Message Protocol), což umožňuje odesílání příkazů ping.
+Přijmout provoz do lokální zpětné smyčky: Umožňuje routeru komunikovat sám se sebou na adrese zpětné smyčky (127.0.0.1).
+Zastavit veškerý ostatní provoz, který nepochází z lokální sítě LAN: Zabraňuje všem ostatním příchozím připojením z rozhraní WAN, s výjimkou těch, která jsou iniciována z lokální sítě. 
+forwardpravidla řetězce (ochrana zařízení v síti LAN)
+Přijmout zavedený, související a nesledovaný provoz: Povoluje legitimní zpětný provoz pro připojení iniciovaná z místní sítě LAN.
+Zastavení neplatných připojení: Zabraňuje přeposílání neplatných paketů přes router.
+Přijmout provoz IPsec: Povolí průchod provozu založeného na zásadách IPsec přes router.
+Zastavit veškerý provoz z WAN bez cílového NATu: Blokuje všechna nová příchozí připojení z WAN, pokud nejsou specificky přesměrována na port (cílový NAT nebo DSTNAT) do zařízení v místní síti LAN .
+Volitelné: FastTrack: Na podporovaném hardwaru lze povolit pravidlo „fasttrack“, které urychlí přesměrování navázaných připojení a sníží tak zatížení CPU. 
+Výchozí pravidlo NAT
+Výchozí konfigurace také zahrnuje pravidlo pro překlad síťových adres (NAT), které umožňuje zařízením v místní síti LAN přístup k internetu.
+Maškaráda: Toto pravidlo převádí soukromé IP adresy zařízení v lokální síti na veřejnou IP adresu WAN rozhraní routeru. Platí pro provoz opouštějící router přes WAN rozhraní. 
+Jak zobrazit výchozí pravidla
+Úplný výchozí konfigurační skript pro vaše zařízení si můžete zobrazit pomocí rozhraní příkazového řádku (CLI): 
+/system default-configuration print
+Tento příkaz vypíše celý skript nastavený z výroby, včetně všech nastavení firewallu, NATu, rozhraní a dalších. 
+Přizpůsobení a osvědčené postupy
+Výchozí pravidla sice poskytují slušný výchozí bod, ale nepředstavují univerzální řešení. Pro větší zabezpečení na nich můžete stavět dodržováním těchto osvědčených postupů: 
+Komentujte svá pravidla: Přidejte popisné komentáře, abyste pochopili účel každého pravidla.
+Vytvořte specifická pravidla pro „přijímání“: V případě potřeby přidejte specifická pravidla pro přijímání pouze služeb, které požadujete (např. VPN porty), a poté vše ostatní zrušte.
+Použití adresních seznamů: Seskupení IP adres do seznamů pro zjednodušení správy pravidel.
+Test v „nouzovém režimu“: Při provádění změn přes WinBox nebo CLI použijte „nouzový režim“ k automatickému vrácení změn, které způsobí ztrátu připojení k routeru. 
